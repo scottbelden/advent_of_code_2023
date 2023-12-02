@@ -20,9 +20,9 @@ fn _get_first_last_value(line: &str) -> u32 {
 }
 
 fn main() {
-    let file_path2 = "src/day1_input";
+    let file_path = "src/input.txt";
     
-    let contents = fs::read_to_string(file_path2)
+    let contents = fs::read_to_string(file_path)
         .expect("Should have been able to read the file");
 
     let mut sum = 0;
