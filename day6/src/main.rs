@@ -38,4 +38,35 @@ fn main() {
     }
 
     println!("Part 1: {product}");
+
+    let mut lines = contents.lines();
+
+    let time = lines
+        .next()
+        .unwrap()
+        .replace(" ", "")
+        .split(":")
+        .last()
+        .unwrap()
+        .parse::<u64>()
+        .unwrap();
+
+    let distance = lines
+        .next()
+        .unwrap()
+        .replace(" ", "")
+        .split(":")
+        .last()
+        .unwrap()
+        .parse::<u64>()
+        .unwrap();
+
+    let mut count: u64 = 0;
+    for i in 0..time {
+        if i * (time - i) > distance {
+            count += 1;
+        }
+    }
+
+    println!("Part 2: {count}");
 }
