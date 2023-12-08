@@ -1,10 +1,10 @@
 use counter::Counter;
 use std::cmp::Ordering;
 use std::fs;
-mod part2;
 
 #[derive(Debug, Clone, PartialOrd, PartialEq, Eq, Ord)]
 enum Card {
+    Jack,
     Two,
     Three,
     Four,
@@ -14,13 +14,12 @@ enum Card {
     Eight,
     Nine,
     Ten,
-    Jack,
     Queen,
     King,
     Ace,
 }
 
-#[derive(Debug, Clone, PartialOrd, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialOrd, PartialEq, Eq, Ord)]
 enum HandType {
     HighCard,
     OnePair,
@@ -95,10 +94,23 @@ fn get_hand_type(cards: &str) -> HandType {
     };
 }
 
+fn get_best_hand_type(cards: &str) -> HandType {
+    if !cards.contains('J') {
+        return get_hand_type(cards);
+    } else {
+        return String::from("23456789TQKA")
+            .chars()
+            .map(|char| get_hand_type(&cards.replace("J", char.to_string().as_str())))
+            .max()
+            .unwrap();
+    }
+}
+
 fn get_cards(cards: &str) -> Vec<Card> {
     cards
         .chars()
         .map(|char| match char {
+            'J' => Card::Jack,
             '2' => Card::Two,
             '3' => Card::Three,
             '4' => Card::Four,
@@ -108,7 +120,6 @@ fn get_cards(cards: &str) -> Vec<Card> {
             '8' => Card::Eight,
             '9' => Card::Nine,
             'T' => Card::Ten,
-            'J' => Card::Jack,
             'Q' => Card::Queen,
             'K' => Card::King,
             _ => Card::Ace,
@@ -116,7 +127,7 @@ fn get_cards(cards: &str) -> Vec<Card> {
         .collect()
 }
 
-fn main() {
+pub fn main() {
     let file_path = "src/input.txt";
 
     let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
@@ -126,7 +137,7 @@ fn main() {
         .map(|line| {
             let (cards, bid) = line.split_once(" ").unwrap();
             let hand = Hand {
-                hand_type: get_hand_type(cards),
+                hand_type: get_best_hand_type(cards),
                 original_cards: get_cards(cards),
                 bid: bid.parse::<usize>().unwrap(),
             };
@@ -142,7 +153,5 @@ fn main() {
         .map(|(index, hand)| (index + 1) * hand.bid)
         .fold(0, |acc, elem| acc + elem);
 
-    println!("Part 1: {product}");
-
-    part2::main();
+    println!("Part 2: {product}");
 }
